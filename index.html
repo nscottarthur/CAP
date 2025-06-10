@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Counters - Energy & Engagement</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .counter-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+            min-width: 280px;
+        }
+        
+        .counter-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .energy .counter-title {
+            color: #e53e3e;
+        }
+        
+        .engagement .counter-title {
+            color: #38a169;
+        }
+        
+        .counter-display {
+            font-size: 100px;
+            font-weight: bold;
+            color: #4a5568;
+            margin: 25px 0;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .counter-display.animate {
+            transform: scale(1.2);
+        }
+        
+        .energy .counter-display.animate {
+            color: #e53e3e;
+        }
+        
+        .engagement .counter-display.animate {
+            color: #38a169;
+        }
+        
+        .counter-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .counter-button {
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 26px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .energy .counter-button {
+            background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+        
+        .engagement .counter-button {
+            background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.4);
+        }
+        
+        .counter-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .energy .counter-button:hover {
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.6);
+        }
+        
+        .engagement .counter-button:hover {
+            box-shadow: 0 6px 20px rgba(56, 161, 105, 0.6);
+        }
+        
+        .counter-button:active {
+            transform: translateY(0);
+        }
+        
+        .counter-button:disabled {
+            background: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .reset-button {
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s ease;
+        }
+        
+        .energy .reset-button {
+            background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+        }
+        
+        .engagement .reset-button {
+            background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+        }
+        
+        .reset-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .energy .reset-button:hover {
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.5);
+        }
+        
+        .engagement .reset-button:hover {
+            box-shadow: 0 6px 20px rgba(56, 161, 105, 0.5);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .energy .progress-fill {
+            background: linear-gradient(90deg, #fc8181 0%, #e53e3e 100%);
+        }
+        
+        .engagement .progress-fill {
+            background: linear-gradient(90deg, #68d391 0%, #38a169 100%);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .counter-container {
+                max-width: 280px;
+            }
+            
+            .counter-display {
+                font-size: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="counter-container energy">
+        <div class="counter-title">Energy</div>
+        
+        <div class="counter-display" id="energyDisplay">0</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="energyProgress"></div>
+        </div>
+        
+        <div class="counter-buttons">
+            <button class="counter-button" id="energyDecrement" onclick="updateCounter('energy', -1)">−</button>
+            <button class="counter-button" id="energyIncrement" onclick="updateCounter('energy', 1)">+</button>
+        </div>
+        
+        <button class="reset-button" onclick="resetCounter('energy')">Reset to 0</button>
+    </div>
+
+    <div class="counter-container engagement">
+        <div class="counter-title">Engagement</div>
+        
+        <div class="counter-display" id="engagementDisplay">0</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="engagementProgress"></div>
+        </div>
+        
+        <div class="counter-buttons">
+            <button class="counter-button" id="engagementDecrement" onclick="updateCounter('engagement', -1)">−</button>
+            <button class="counter-button" id="engagementIncrement" onclick="updateCounter('engagement', 1)">+</button>
+        </div>
+        
+        <button class="reset-button" onclick="resetCounter('engagement')">Reset to 0</button>
+    </div>
+
+    <script>
+        let counters = {
+            energy: 0,
+            engagement: 0
+        };
+        
+        function updateDisplay(type) {
+            const display = document.getElementById(type + 'Display');
+            const progressFill = document.getElementById(type + 'Progress');
+            const incrementBtn = document.getElementById(type + 'Increment');
+            const decrementBtn = document.getElementById(type + 'Decrement');
+            
+            display.textContent = counters[type];
+            
+            // Update progress bar (counter/10 * 100%)
+            const progressPercentage = (counters[type] / 10) * 100;
+            progressFill.style.width = progressPercentage + '%';
+            
+            // Add animation effect
+            display.classList.add('animate');
+            setTimeout(() => {
+                display.classList.remove('animate');
+            }, 300);
+            
+            // Enable/disable buttons based on counter value
+            incrementBtn.disabled = counters[type] >= 10;
+            decrementBtn.disabled = counters[type] <= 0;
+        }
+        
+        function updateCounter(type, change) {
+            const newValue = counters[type] + change;
+            if (newValue >= 0 && newValue <= 10) {
+                counters[type] = newValue;
+                updateDisplay(type);
+            }
+        }
+        
+        function resetCounter(type) {
+            counters[type] = 0;
+            updateDisplay(type);
+        }
+        
+        // Initialize displays
+        updateDisplay('energy');
+        updateDisplay('engagement');
+    </script>
+</body>
+</html>
